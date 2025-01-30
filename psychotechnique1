@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Psychotechnique</title>
+    <script>
+        const csvData = `question,option1,option2,option3,option4,réponse_correcte
+        Quelle est la suite logique ? 3,6,12,24,?,36,48,30,50,48
+        Quel est l'intrus ? Lion,Tigre,Chat,Dauphin,Lion,Tigre,Chat,Dauphin,Dauphin
+        Combien font 125% de 80 ?,90,100,110,120,100
+        Si un train part à 14h45 et met 3h20, à quelle heure arrive-t-il ?,17h55,18h05,18h15,18h30,18h05
+        Quel est l'intrus ? Carré,Triangle,Rectangle,Losange,Carré,Triangle,Rectangle,Losange,Triangle
+        Complétez la suite : J, F, M, A, M, ?,J,A,S,O,J
+        Combien d'angles a un octogone ?,6,8,10,12,8
+        Si aujourd'hui est lundi, quel jour sera dans 17 jours ?,Mercredi,Jeudi,Vendredi,Samedi,Samedi
+        Trouvez le nombre manquant : 81, 64, ?, 36, 25,50,49,48,47,49
+        Un mot de 5 lettres contient 'I' au centre, commence par 'T' et finit par 'E'. Quel est ce mot ?,Titre,Tigre,Table,Tonne,Titre
+        Quelle est la valeur de X dans l'équation : 3X + 5 = 20 ?,4,5,6,7,5
+        Quel est l'opposé du mot 'froid' ?,Chaud,Glacial,Humide,Sec,Chaud
+        Une horloge avance de 5 minutes toutes les heures. Combien d'avance aura-t-elle après 12 heures ?,50 min,60 min,1h05,1h10,60 min
+        Quel est le carré de 19 ?,321,361,381,400,361
+        Si 8 ouvriers construisent un mur en 6 jours, combien de jours faut-il à 4 ouvriers ?,8,10,12,14,12`;
+        
+        function loadQuestions() {
+            const rows = csvData.split("\n").slice(1);
+            const questions = rows.map(row => {
+                const [question, ...options] = row.split(",");
+                return { question, options: options.slice(0, -1), answer: options[options.length - 1].trim() };
+            });
+            
+            const container = document.getElementById("questions-container");
+            questions.forEach((q, index) => {
+                const div = document.createElement("div");
+                div.innerHTML = `<p><strong>${q.question}</strong></p>` +
+                    q.options.map(option => `<label><input type='radio' name='q${index}' value='${option}'> ${option}</label><br>`).join("");
+                container.appendChild(div);
+            });
+        }
+
+        function calculateScore() {
+            const rows = csvData.split("\n").slice(1);
+            let score = 0;
+            rows.forEach((row, index) => {
+                const options = row.split(",");
+                const correctAnswer = options[options.length - 1].trim();
+                const selected = document.querySelector(`input[name='q${index}']:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            });
+            document.getElementById("score").textContent = `Votre score : ${score} / ${rows.length}`;
+        }
+    </script>
+</head>
+<body onload="loadQuestions()">
+    <h1>Test Psychotechnique</h1>
+    <div id="questions-container"></div>
+    <button onclick="calculateScore()">Valider</button>
+    <p id="score"></p>
+</body>
+</html>
